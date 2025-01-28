@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Animated,
@@ -39,11 +39,12 @@ export const Wheel5 = () => {
   const spinValue = useState(new Animated.Value(0))[0];
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState();
+  const bounceValue = useRef(new Animated.Value(1)).current; // Initial scale of 1
 
   const spinWheel = () => {
     const randomSpins = Math.floor(Math.random() * 3) + 3; // Between 3 to 7 spins
     const finalAngle =
-      randomSpins * 180 +
+      randomSpins * 90 +
       SECTIONS[Math.floor(Math.random() * SECTIONS.length)].angle;
 
     Animated.timing(spinValue, {
@@ -70,6 +71,29 @@ export const Wheel5 = () => {
       }, 1000);
     });
   };
+
+  useEffect(() => {
+    const startBounceAnimation = () => {
+      Animated.loop(
+        Animated.sequence([
+          Animated.spring(bounceValue, {
+            toValue: 1.1, // Slightly scale up
+            friction: 1, // Lower friction for faster, smoother bounce
+            tension: 100, // Higher tension for faster bounce
+            useNativeDriver: true,
+          }),
+          Animated.spring(bounceValue, {
+            toValue: 1, // Scale back to normal
+            friction: 1, // Lower friction for faster, smoother bounce
+            tension: 100, // Higher tension for faster bounce
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    };
+
+    startBounceAnimation();
+  }, [bounceValue]);
 
   return (
     <View className="flex justify-center items-center ">
@@ -99,9 +123,9 @@ export const Wheel5 = () => {
         />
         <TouchableOpacity
           onPress={spinWheel}
-          className="w-[50px] h-[50px] absolute self-center top-[42%]">
+          className="w-[50px] h-[50px] absolute self-center top-[38%]">
           <Image
-            className="w-[50px] h-[50px] absolute self-center"
+            className="w-[70px] h-[70px] absolute self-center"
             source={require('../assets/spin.png')}
           />
         </TouchableOpacity>
@@ -109,6 +133,15 @@ export const Wheel5 = () => {
           className="w-[50px] h-[30px] absolute self-center top-[7%]"
           resizeMode="center"
           source={require('../assets/pointer.png')}
+        />
+        {/* <Image
+          className="w-[70px] h-[70px] absolute top-[46%] left-[46%]"
+          resizeMode="center"
+          source={require('../assets/cursor.png')}
+        /> */}
+        <Animated.Image
+          source={require('../assets/cursor.png')} // Replace with your image
+          style={[styles.image, {transform: [{scale: bounceValue}]}]}
         />
       </View>
       <Modal
@@ -215,5 +248,12 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  image: {
+    width: 70,
+    height: 70,
+    position: 'absolute',
+    top: '46%',
+    left: '46%',
   },
 });
