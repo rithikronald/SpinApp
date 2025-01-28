@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {Animated, Easing, TouchableOpacity, View} from 'react-native';
+import {
+  Animated,
+  Easing,
+  ImageBackground,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const SECTIONS = [
   {label: '₹100', angle: 0},
@@ -15,6 +21,7 @@ const SECTIONS = [
 
 export const Wheel5 = () => {
   const spinValue = useState(new Animated.Value(0))[0];
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const spinWheel = () => {
     const randomSpins = Math.floor(Math.random() * 3) + 3; // Between 3 to 7 spins
@@ -43,13 +50,17 @@ export const Wheel5 = () => {
   };
 
   return (
-    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-      <TouchableOpacity onPress={spinWheel}>
+    <View className="flex justify-center items-center ">
+      <ImageBackground
+        className="w-[420px] h-[420px] animate-slow-spin"
+        source={require('../assets/turn.png')}
+      />
+      <TouchableOpacity className="absolute" onPress={spinWheel}>
         <Animated.Image
           source={require('../assets/wheel2.png')}
           style={{
-            width: 300,
-            height: 300,
+            width: 350,
+            height: 350,
             transform: [
               {
                 rotate: spinValue.interpolate({
@@ -58,8 +69,7 @@ export const Wheel5 = () => {
                 }),
               },
             ],
-          }}
-        />
+          }}></Animated.Image>
       </TouchableOpacity>
     </View>
   );

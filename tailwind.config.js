@@ -9,6 +9,9 @@ module.exports = {
         primary: '#B301F2',
         secondary: '#8B4FC94F',
       },
+      animation: {
+        'slow-spin': 'spin 10s linear infinite',
+      },
     },
   },
   plugins: [],
