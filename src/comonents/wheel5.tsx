@@ -1,12 +1,18 @@
 import React, {useState} from 'react';
 import {
+  Alert,
   Animated,
   Easing,
   Image,
   ImageBackground,
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SECTIONS = [
   {label: '₹100', angle: 0},
@@ -22,7 +28,7 @@ const SECTIONS = [
 
 export const Wheel5 = () => {
   const spinValue = useState(new Animated.Value(0))[0];
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const spinWheel = () => {
     const randomSpins = Math.floor(Math.random() * 3) + 3; // Between 3 to 7 spins
@@ -53,7 +59,7 @@ export const Wheel5 = () => {
   return (
     <View className="flex justify-center items-center ">
       <ImageBackground
-        className="w-[420px] h-[420px] animate-slow-spin"
+        className="w-[400px] h-[400px] animate-slow-spin"
         source={require('../assets/turn.png')}
       />
       <ImageBackground
@@ -89,6 +95,100 @@ export const Wheel5 = () => {
           source={require('../assets/pointer.png')}
         />
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalOpen}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setIsModalOpen(!isModalOpen);
+        }}>
+        <View className="flex-1 justify-center items-center bg-black/70 p-8">
+          <View className="flex w-full items-end">
+            <TouchableOpacity onPress={() => setIsModalOpen(false)}>
+              <Image
+                className="w-6 h-5"
+                resizeMode="contain"
+                source={require('../assets/x.png')}
+              />
+            </TouchableOpacity>
+          </View>
+          <LinearGradient
+            style={styles.modalView}
+            colors={['#7600EB', '#2B0552']}>
+            <ImageBackground
+              className="w-full h-full flex justify-center items-center p-16"
+              resizeMode="contain"
+              source={require('../assets/backgroundStar.png')}>
+              <Image source={require('../assets/rupee.png')} />
+              <Text className="text-3xl font-bold color-[#FEBD01] my-4">
+                Congratulations!
+              </Text>
+              <Text className="text-white font-bold text-sm text-center mb-8">
+                You have win a ₹100 cash it will be credited on your spin app
+                wallet
+              </Text>
+              <LinearGradient
+                style={{
+                  padding: 2,
+                  borderRadius: 6,
+                  width: 140,
+                  height: 26,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}
+                colors={['#FFBA01', '#E08304']}>
+                <Text className="text-white italic font-bold">Cash Out</Text>
+              </LinearGradient>
+            </ImageBackground>
+          </LinearGradient>
+        </View>
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    width: '100%',
+    height: '45%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: '#2196F3',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+});
