@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Animated,
   Easing,
+  Image,
   ImageBackground,
   TouchableOpacity,
   View,
@@ -55,7 +56,11 @@ export const Wheel5 = () => {
         className="w-[420px] h-[420px] animate-slow-spin"
         source={require('../assets/turn.png')}
       />
-      <TouchableOpacity className="absolute" onPress={spinWheel}>
+      <ImageBackground
+        className="w-[300px] h-[300px] absolute"
+        source={require('../assets/circle.png')}
+      />
+      <View className="absolute">
         <Animated.Image
           source={require('../assets/wheel2.png')}
           style={{
@@ -70,7 +75,20 @@ export const Wheel5 = () => {
               },
             ],
           }}></Animated.Image>
-      </TouchableOpacity>
+        <TouchableOpacity
+          onPress={spinWheel}
+          className="w-[50px] h-[50px] absolute self-center top-[42%]">
+          <Image
+            className="w-[50px] h-[50px] absolute self-center"
+            source={require('../assets/spin.png')}
+          />
+        </TouchableOpacity>
+        <Image
+          className="w-[50px] h-[40px] absolute self-center top-[7%]"
+          resizeMode="center"
+          source={require('../assets/pointer.png')}
+        />
+      </View>
     </View>
   );
 };
