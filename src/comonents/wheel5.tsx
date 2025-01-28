@@ -19,7 +19,7 @@ export const Wheel5 = () => {
   const spinWheel = () => {
     const randomSpins = Math.floor(Math.random() * 3) + 3; // Between 3 to 7 spins
     const finalAngle =
-      randomSpins * 360 +
+      randomSpins * 180 +
       SECTIONS[Math.floor(Math.random() * SECTIONS.length)].angle;
 
     Animated.timing(spinValue, {
@@ -43,7 +43,7 @@ export const Wheel5 = () => {
   };
 
   return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View style={{justifyContent: 'center', alignItems: 'center'}}>
       <TouchableOpacity onPress={spinWheel}>
         <Animated.Image
           source={require('../assets/wheel2.png')}
