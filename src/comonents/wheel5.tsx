@@ -36,39 +36,76 @@ const SECTIONS = [
 ];
 
 export const Wheel5 = () => {
-  const spinValue = useState(new Animated.Value(0))[0];
+  const spinValue = useRef(new Animated.Value(0)).current;
+  const [isSpinning, setIsSpinning] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPrize, setSelectedPrize] = useState();
   const bounceValue = useRef(new Animated.Value(1)).current; // Initial scale of 1
 
-  const spinWheel = () => {
-    const randomSpins = Math.floor(Math.random() * 3) + 3; // Between 3 to 7 spins
-    const finalAngle =
-      randomSpins * 90 +
-      SECTIONS[Math.floor(Math.random() * SECTIONS.length)].angle;
+  const resetWheel = () => {
+    spinValue.setValue(0);
+  };
 
-    Animated.timing(spinValue, {
-      toValue: finalAngle,
-      duration: 3000,
-      easing: Easing.out(Easing.exp),
-      useNativeDriver: true,
-    }).start(() => {
-      // Calculate the final section
-      const normalizedAngle = finalAngle % 360;
-      const selectedSection = SECTIONS.find(
-        section =>
-          normalizedAngle >= section.angle &&
-          normalizedAngle < section.angle + 45,
-      );
-      console.log(
-        'Selected:',
-        selectedSection ? selectedSection.label : 'Unknown',
-      );
-      console.log(selectedSection);
+  const spinWheel = () => {
+    if (isSpinning) return; // Prevent multiple spins
+    setIsSpinning(true);
+
+    // Generate random number of complete rotations (3-5 rotations)
+    const numberOfRotations = Math.floor(Math.random() * 3) + 3;
+
+    // Generate random section to land on
+    const randomSectionIndex = Math.floor(Math.random() * SECTIONS.length);
+    const sectionAngle = SECTIONS[randomSectionIndex].angle;
+
+    // Calculate final rotation value (complete rotations + section angle)
+    const finalRotation = numberOfRotations * 360 + sectionAngle;
+
+    // Start the spin animation
+    Animated.sequence([
+      // First spin to final position
+      Animated.timing(spinValue, {
+        toValue: finalRotation,
+        duration: 3000,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }),
+      // Small bounce back
+      Animated.timing(spinValue, {
+        toValue: finalRotation - 10,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+      // Final settling
+      Animated.timing(spinValue, {
+        toValue: finalRotation,
+        duration: 150,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      // Animation complete callback
+      const selectedSection = SECTIONS[randomSectionIndex];
+      console.log('Selected Section:', selectedSection.label);
       setSelectedPrize(selectedSection);
+
+      // Show modal after a short delay
       setTimeout(() => {
         setIsModalOpen(true);
-      }, 1000);
+      }, 500);
+
+      // Reset wheel after 5 seconds
+      setTimeout(() => {
+        Animated.timing(spinValue, {
+          toValue: 0,
+          duration: 300,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }).start(() => {
+          setIsSpinning(false);
+          resetWheel();
+        });
+      }, 2000);
     });
   };
 
@@ -123,6 +160,7 @@ export const Wheel5 = () => {
         />
         <TouchableOpacity
           onPress={spinWheel}
+          disabled={isSpinning}
           className="w-[50px] h-[50px] absolute self-center top-[38%]">
           <Image
             className="w-[70px] h-[70px] absolute self-center"
@@ -253,7 +291,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     position: 'absolute',
-    top: '46%',
-    left: '46%',
+    top: '48%',
+    left: '48%',
   },
 });
