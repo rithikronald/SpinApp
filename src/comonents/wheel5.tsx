@@ -13,16 +13,26 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
+// const SECTIONS = [
+//   {label: '₹100', angle: 0, uri: require('../assets/rupee.png')},
+//   {label: 'Mini', angle: 45, uri: require('../assets/mini.png')},
+//   {label: 'Mega', angle: 90, uri: require('../assets/mega.png')},
+//   {label: 'Double', angle: 135, uri: require('../assets/double.png')},
+//   {label: '?', angle: 180, uri: require('../assets/cashout2.png')},
+//   {label: 'Cash Out', angle: 225},
+//   {label: 'Double', angle: 270, uri: require('../assets/double.png')},
+//   {label: 'Mini', angle: 315, uri: require('../assets/mini.png')},
+//   {label: 'Medium', angle: 360, uri: require('../assets/medium.png')},
+// ];
 const SECTIONS = [
-  {label: '₹100', angle: 0, uri: require('../assets/rupee.png')},
-  {label: 'Mini', angle: 45, uri: require('../assets/mini.png')},
-  {label: 'Mega', angle: 90, uri: require('../assets/mega.png')},
-  {label: 'Double', angle: 135, uri: require('../assets/double.png')},
-  {label: '?', angle: 180, uri: require('../assets/cashout2.png')},
-  {label: 'Cash Out', angle: 225},
-  {label: 'Double', angle: 270, uri: require('../assets/double.png')},
-  {label: 'Mini', angle: 315, uri: require('../assets/mini.png')},
-  {label: 'Medium', angle: 360, uri: require('../assets/medium.png')},
+  {label: 'Mini', angle: 0, uri: require('../assets/mini.png')},
+  {label: 'Mega', angle: 45, uri: require('../assets/mega.png')},
+  {label: 'Double', angle: 90, uri: require('../assets/double.png')},
+  {label: 'Cash Out', angle: 135, uri: require('../assets/cashout2.png')},
+  {label: 'Double', angle: 180, uri: require('../assets/double.png')},
+  {label: 'Mini', angle: 225, uri: require('../assets/mini.png')},
+  {label: '₹100', angle: 270, uri: require('../assets/rupee.png')},
+  {label: 'Medium', angle: 315, uri: require('../assets/medium.png')},
 ];
 
 export const Wheel5 = () => {
@@ -64,7 +74,7 @@ export const Wheel5 = () => {
   return (
     <View className="flex justify-center items-center ">
       <ImageBackground
-        className="w-[400px] h-[400px] animate-slow-spin"
+        className="w-[90%] h-[350px] animate-slow-spin"
         source={require('../assets/turn.png')}
       />
       <ImageBackground
@@ -85,7 +95,8 @@ export const Wheel5 = () => {
                 }),
               },
             ],
-          }}></Animated.Image>
+          }}
+        />
         <TouchableOpacity
           onPress={spinWheel}
           className="w-[50px] h-[50px] absolute self-center top-[42%]">
