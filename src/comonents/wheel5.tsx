@@ -31,8 +31,8 @@ const SECTIONS = [
   {label: 'Cash Out', angle: 135, uri: require('../assets/cashout2.png')},
   {label: 'Double', angle: 180, uri: require('../assets/double.png')},
   {label: 'Mini', angle: 225, uri: require('../assets/mini.png')},
-  {label: '₹100', angle: 270, uri: require('../assets/rupee.png')},
-  {label: 'Medium', angle: 315, uri: require('../assets/medium.png')},
+  {label: 'Medium', angle: 270, uri: require('../assets/medium.png')},
+  {label: '₹100', angle: 315, uri: require('../assets/rupee.png')},
 ];
 
 export const Wheel5 = () => {
@@ -42,27 +42,49 @@ export const Wheel5 = () => {
   const [selectedPrize, setSelectedPrize] = useState();
   const bounceValue = useRef(new Animated.Value(1)).current; // Initial scale of 1
 
-  const resetWheel = () => {
-    spinValue.setValue(0);
+  const getSelectedSection = finalRotation => {
+    const numberOfSegments = SECTIONS.length;
+    const oneTurn = 360;
+    const angleBySegment = oneTurn / numberOfSegments;
+    const deg = Math.abs(Math.round(finalRotation % 360));
+    const res =
+      (SECTIONS.length - Math.floor(deg / angleBySegment)) % numberOfSegments;
+    console.log('RESULT', res);
+    // Normalize the rotation to 0-360 degrees
+    const normalizedRotation = finalRotation % 360;
+
+    // Since the wheel rotates clockwise but our sections are defined counter-clockwise,
+    // we need to invert the rotation angle
+    const invertedRotation = (360 - normalizedRotation) % 360;
+
+    // Find the section that contains this angle
+    // Each section is 45 degrees (360/8 sections)
+    const sectionIndex = Math.floor(invertedRotation / 45);
+    console.log('Rotation', finalRotation);
+    console.log('normalizedRotation', normalizedRotation);
+    console.log('invertedRotation', invertedRotation);
+    console.log('SelectIndex', sectionIndex);
+    return SECTIONS[res];
   };
 
   const spinWheel = () => {
-    if (isSpinning) return; // Prevent multiple spins
+    if (isSpinning) return;
     setIsSpinning(true);
 
     // Generate random number of complete rotations (3-5 rotations)
     const numberOfRotations = Math.floor(Math.random() * 3) + 3;
 
-    // Generate random section to land on
-    const randomSectionIndex = Math.floor(Math.random() * SECTIONS.length);
-    const sectionAngle = SECTIONS[randomSectionIndex].angle;
+    // Generate random additional angle (0-360)
+    const randomAngle = Math.floor(Math.random() * 360);
 
-    // Calculate final rotation value (complete rotations + section angle)
-    const finalRotation = numberOfRotations * 360 + sectionAngle;
+    // Calculate final rotation value
+    // const finalRotation = numberOfRotations * 360 + randomAngle;
+    const finalRotation = numberOfRotations * 360 + randomAngle;
 
-    // Start the spin animation
+    //New Code
+
     Animated.sequence([
-      // First spin to final position
+      // Main spin animation
       Animated.timing(spinValue, {
         toValue: finalRotation,
         duration: 3000,
@@ -84,8 +106,8 @@ export const Wheel5 = () => {
         useNativeDriver: true,
       }),
     ]).start(() => {
-      // Animation complete callback
-      const selectedSection = SECTIONS[randomSectionIndex];
+      // Calculate which section is at the top when wheel stops
+      const selectedSection = getSelectedSection(finalRotation);
       console.log('Selected Section:', selectedSection.label);
       setSelectedPrize(selectedSection);
 
@@ -103,7 +125,7 @@ export const Wheel5 = () => {
           useNativeDriver: true,
         }).start(() => {
           setIsSpinning(false);
-          resetWheel();
+          spinValue.setValue(0);
         });
       }, 2000);
     });
